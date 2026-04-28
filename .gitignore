@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+
+# Build outputs
+dist/
+dist.zip
+target/
+*.class
+
+# Logs and local runtime files
+logs/
+*.log
+*.pid
+.playwright-mcp/
+
+# Python caches and test/runtime artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+test-results/
+
+# RAG/vector runtime data
+zzyl-ai-service/data/
+zzyl-ai-service/data/chroma.broken-*/
+
+# Local tools and IDE state
+.idea/
+.claude/
+codex-upload-index.tmp
+.codex-upload-index.lock
+codex-upload-index.tmp.lock
+.DS_Store
+Thumbs.db
+
+# Local environment overrides
+.env.local
+.env.*.local

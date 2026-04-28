@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.mapper.BedMapper">
+    <resultMap id="BedResultMap" type="com.zzyl.entity.Bed">
+        <id column="id" property="id"/>
+        <result column="bed_number" property="bedNumber"/>
+        <result column="bed_status" property="bedStatus"/>
+        <result column="room_id" property="roomId"/>
+        <result property="sort" column="sort"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <resultMap id="BedVoResultMap" type="com.zzyl.vo.BedVo">
+        <id column="id" property="id"/>
+        <result column="bed_number" property="bedNumber"/>
+        <result column="bed_status" property="bedStatus"/>
+        <result column="room_id" property="roomId"/>
+        <result property="sort" column="sort"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="lname" property="lname"/>
+        <result column="ename" property="name"/>
+        <result column="eid" property="elderId"/>
+        <result column="price" property="price"/>
+    </resultMap>
+    <insert id="addBed">
+        insert into bed (bed_number, bed_status, sort, room_id, create_time, update_time, create_by, update_by, remark)
+        values (#{bedNumber}, #{bedStatus}, #{sort}, #{roomId}, #{createTime}, #{updateTime}, #{createBy}, #{updateBy}, #{remark})
+
+    </insert>
+    <update id="updateBed">
+        UPDATE bed
+        <set>
+            <if test="bedNumber != null">bed_number = #{bedNumber},</if>
+            <if test="bedStatus != null">bed_status = #{bedStatus},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="roomId != null">room_id = #{roomId},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteById">
+
+
+        delete from bed where id = #{id}
+    </delete>
+
+    <select id="getBedsByRoomId" resultMap="BedVoResultMap" parameterType="java.lang.Long">
+        select b.*,
+               e.name  as ename,
+               e.id    as eid
+        from bed b
+                 left join elder e on b.id = e.bed_id
+        where b.room_id = #{roomId}
+        order by b.sort, b.create_time desc
+    </select>
+    <select id="getById" resultType="com.zzyl.entity.Bed">
+        select * from bed where id = #{id}
+    </select>
+</mapper>

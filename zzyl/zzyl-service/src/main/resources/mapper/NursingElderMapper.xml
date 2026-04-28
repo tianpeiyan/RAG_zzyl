@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.mapper.NursingElderMapper">
+    <select id="selectUserByElderId" resultType="com.zzyl.vo.UserVo">
+        select u.id as uid,
+               u.real_name
+        from nursing_elder ne
+                 left join sys_user u on u.id = ne.nursing_id
+        where ne.elder_id = #{elderId}
+    </select>
+
+    <select id="selectNursingNameByElderId" resultType="java.lang.String">
+        select u.real_name
+        from nursing_elder ne
+                 left join sys_user u on u.id = ne.nursing_id
+        where ne.elder_id = #{elderId}
+    </select>
+
+    <select id="selectNursingIdsByElderId" resultType="java.lang.Long">
+        select ne.nursing_id
+        from nursing_elder ne
+        where ne.elder_id = #{elderId}
+        order by ne.create_time asc
+    </select>
+
+    <delete id="deleteByElderId">
+        delete from nursing_elder
+        where elder_id = #{elderId}
+    </delete>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into nursing_elder (elder_id, nursing_id, create_time, update_time, create_by, update_by)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.elderId}, #{item.nursingId}, #{item.createTime}, #{item.updateTime}, #{item.createBy}, #{item.updateBy})
+        </foreach>
+    </insert>
+</mapper>

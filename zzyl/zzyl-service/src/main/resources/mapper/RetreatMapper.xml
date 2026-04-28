@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.mapper.RetreatMapper">
+    <resultMap id="BaseResultMap" type="com.zzyl.entity.Retreat">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="retreat_code" jdbcType="VARCHAR" property="retreatCode"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="elder_id" jdbcType="BIGINT" property="elderId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="id_card_no" jdbcType="VARCHAR" property="idCardNo"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="check_in_start_time" jdbcType="TIMESTAMP" property="checkInStartTime"/>
+        <result column="check_in_end_time" jdbcType="TIMESTAMP" property="checkInEndTime"/>
+        <result column="check_out_time" jdbcType="TIMESTAMP" property="checkOutTime"/>
+        <result column="cost_start_time" jdbcType="TIMESTAMP" property="costStartTime"/>
+        <result column="cost_end_time" jdbcType="TIMESTAMP" property="costEndTime"/>
+        <result column="nursing_level_name" jdbcType="VARCHAR" property="nursingLevelName"/>
+        <result column="bed_number" jdbcType="VARCHAR" property="bedNumber"/>
+        <result column="contract_name" jdbcType="VARCHAR" property="contractName"/>
+        <result column="contract_url" jdbcType="VARCHAR" property="contractUrl"/>
+        <result column="contract_no" jdbcType="VARCHAR" property="contractNo"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="reason" jdbcType="VARCHAR" property="reason"/>
+        <result column="nursing_name" jdbcType="VARCHAR" property="nursingName"/>
+        <result column="applicat" jdbcType="VARCHAR" property="applicat"/>
+        <result column="applicat_id" jdbcType="BIGINT" property="applicatId"/>
+        <result column="dept_no" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, retreat_code, title, elder_id, name, id_card_no, phone, address, check_in_start_time, check_in_end_time,
+        cost_start_time, cost_end_time, nursing_level_name, bed_number, contract_name, contract_url, contract_no,
+        nursing_name,check_out_time,reason,remark, applicat, applicat_id, dept_no, create_time, update_time, create_by, update_by
+    </sql>
+
+    <insert id="insert" parameterType="com.zzyl.entity.Retreat" useGeneratedKeys="true" keyProperty="id">
+        insert into retreat (
+            retreat_code, title, elder_id, name, id_card_no, phone, address, check_in_start_time, check_in_end_time, check_out_time,
+            cost_start_time, cost_end_time, nursing_level_name, bed_number, contract_name, contract_url, contract_no,
+            remark, reason, nursing_name, applicat, applicat_id, dept_no, create_time, update_time, create_by, update_by
+        ) values (
+            #{retreatCode}, #{title}, #{elderId}, #{name}, #{idCardNo}, #{phone}, #{address}, #{checkInStartTime}, #{checkInEndTime}, #{checkOutTime},
+            #{costStartTime}, #{costEndTime}, #{nursingLevelName}, #{bedNumber}, #{contractName}, #{contractUrl}, #{contractNo},
+            #{remark}, #{reason}, #{nursingName}, #{applicat}, #{applicatId}, #{deptNo}, #{createTime}, #{updateTime}, #{createBy}, #{updateBy}
+        )
+    </insert>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from retreat
+        where id = #{id}
+    </select>
+
+    <select id="selectList" resultType="com.zzyl.vo.RetreatVo">
+        select
+        <include refid="Base_Column_List"/>
+        from retreat
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and id_card_no like concat('%', #{idCard}, '%')
+            </if>
+            <if test="startTime != null and startTime != ''">
+                and check_out_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and check_out_time &lt;= #{endTime}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectByElderId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from retreat
+        where elder_id = #{elderId}
+        order by create_time desc
+        limit 1
+    </select>
+
+</mapper>

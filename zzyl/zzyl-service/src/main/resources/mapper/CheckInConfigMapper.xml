@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.mapper.CheckInConfigMapper">
+    <resultMap id="BaseResultMap" type="com.zzyl.entity.CheckInConfig">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="elder_id" jdbcType="BIGINT" property="elderId"/>
+        <result column="check_in_code" jdbcType="VARCHAR" property="checkInCode"/>
+        <result column="check_in_start_time" jdbcType="TIMESTAMP" property="checkInStartTime"/>
+        <result column="check_in_end_time" jdbcType="TIMESTAMP" property="checkInEndTime"/>
+        <result column="nursing_level_id" jdbcType="BIGINT" property="nursingLevelId"/>
+        <result column="nursing_level_name" jdbcType="VARCHAR" property="nursingLevelName"/>
+        <result column="bed_number" jdbcType="VARCHAR" property="bedNumber"/>
+        <result column="cost_start_time" jdbcType="TIMESTAMP" property="costStartTime"/>
+        <result column="cost_end_time" jdbcType="TIMESTAMP" property="costEndTime"/>
+        <result column="deposit_amount" jdbcType="DECIMAL" property="depositAmount"/>
+        <result column="nursing_cost" jdbcType="DECIMAL" property="nursingCost"/>
+        <result column="bed_cost" jdbcType="DECIMAL" property="bedCost"/>
+        <result column="other_cost" jdbcType="DECIMAL" property="otherCost"/>
+        <result column="medical_insurance_payment" jdbcType="DECIMAL" property="medicalInsurancePayment"/>
+        <result column="government_subsidy" jdbcType="DECIMAL" property="governmentSubsidy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, elder_id, check_in_code, check_in_start_time, check_in_end_time, nursing_level_id, nursing_level_name, bed_number, cost_start_time, cost_end_time, deposit_amount, nursing_cost, bed_cost, other_cost, medical_insurance_payment, government_subsidy, create_time, update_time, create_by, update_by, remark
+    </sql>
+
+    <insert id="insert" parameterType="com.zzyl.entity.CheckInConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into check_in_config (elder_id, check_in_code, check_in_start_time,
+                                     check_in_end_time, nursing_level_id, nursing_level_name,
+                                     bed_number, cost_start_time, cost_end_time,
+                                     deposit_amount, nursing_cost, bed_cost,
+                                     other_cost, medical_insurance_payment, government_subsidy,
+                                     create_time, update_time, create_by,
+                                     update_by, remark)
+        values (#{elderId,jdbcType=BIGINT}, #{checkInCode,jdbcType=VARCHAR}, #{checkInStartTime,jdbcType=TIMESTAMP},
+                #{checkInEndTime,jdbcType=TIMESTAMP}, #{nursingLevelId,jdbcType=BIGINT}, #{nursingLevelName,jdbcType=VARCHAR},
+                #{bedNumber,jdbcType=VARCHAR}, #{costStartTime,jdbcType=TIMESTAMP}, #{costEndTime,jdbcType=TIMESTAMP},
+                #{depositAmount,jdbcType=DECIMAL}, #{nursingCost,jdbcType=DECIMAL}, #{bedCost,jdbcType=DECIMAL},
+                #{otherCost,jdbcType=DECIMAL}, #{medicalInsurancePayment,jdbcType=DECIMAL}, #{governmentSubsidy,jdbcType=DECIMAL},
+                #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=BIGINT},
+                #{updateBy,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="selectByCheckInCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from check_in_config
+        where check_in_code = #{checkInCode,jdbcType=VARCHAR}
+    </select>
+</mapper>

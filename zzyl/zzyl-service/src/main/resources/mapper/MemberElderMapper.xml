@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzyl.mapper.MemberElderMapper">
+    <resultMap id="BaseResultMap" type="com.zzyl.entity.MemberElder">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="member_id" property="memberId" jdbcType="BIGINT"/>
+        <result column="elder_id" property="elderId" jdbcType="BIGINT"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="create_by" property="createBy" jdbcType="BIGINT"/>
+        <result column="update_by" property="updateBy" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, member_id, elder_id, remark, create_time, update_time, create_by, update_by
+    </sql>
+
+    <insert id="insert" parameterType="com.zzyl.entity.MemberElder" useGeneratedKeys="true" keyProperty="id">
+        insert into member_elder (member_id, elder_id, remark, create_time, update_time, create_by, update_by)
+        values (#{memberId}, #{elderId}, #{remark}, #{createTime}, #{updateTime}, #{createBy}, #{updateBy})
+    </insert>
+
+    <select id="selectByMemberId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from member_elder
+        where member_id = #{memberId}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from member_elder
+        where id = #{id}
+    </delete>
+
+    <select id="selectByMemberIdAndElderId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from member_elder
+        where member_id = #{memberId} and elder_id = #{elderId}
+    </select>
+</mapper>

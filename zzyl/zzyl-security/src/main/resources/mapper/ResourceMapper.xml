@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.mapper.ResourceMapper">
+  <resultMap id="BaseResultMap" type="com.zzyl.entity.Resource">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="resource_no" jdbcType="VARCHAR" property="resourceNo" />
+    <result column="parent_resource_no" jdbcType="VARCHAR" property="parentResourceNo" />
+    <result column="resource_name" jdbcType="VARCHAR" property="resourceName" />
+    <result column="resource_type" jdbcType="CHAR" property="resourceType" />
+    <result column="request_path" jdbcType="VARCHAR" property="requestPath" />
+    <result column="label" jdbcType="VARCHAR" property="label" />
+    <result column="data_state" jdbcType="CHAR" property="dataState" />
+    <result column="sort_no" jdbcType="INTEGER" property="sortNo" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, resource_no, parent_resource_no, resource_name, resource_type, request_path, 
+    label, data_state, sort_no, icon, create_time, update_time, remark, create_by, update_by
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_resource
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_resource
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.zzyl.entity.Resource">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_resource (resource_no, parent_resource_no, resource_name, 
+      resource_type, request_path, label, 
+      data_state, sort_no, icon, 
+      create_time, update_time, remark, 
+      create_by, update_by)
+    values (#{resourceNo,jdbcType=VARCHAR}, #{parentResourceNo,jdbcType=VARCHAR}, #{resourceName,jdbcType=VARCHAR}, 
+      #{resourceType,jdbcType=CHAR}, #{requestPath,jdbcType=VARCHAR}, #{label,jdbcType=VARCHAR}, 
+      #{dataState,jdbcType=CHAR}, #{sortNo,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, 
+      #{createBy,jdbcType=BIGINT}, #{updateBy,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzyl.entity.Resource">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_resource
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="resourceNo != null">
+        resource_no,
+      </if>
+      <if test="parentResourceNo != null">
+        parent_resource_no,
+      </if>
+      <if test="resourceName != null">
+        resource_name,
+      </if>
+      <if test="resourceType != null">
+        resource_type,
+      </if>
+      <if test="requestPath != null">
+        request_path,
+      </if>
+      <if test="label != null">
+        label,
+      </if>
+      <if test="dataState != null">
+        data_state,
+      </if>
+      <if test="sortNo != null">
+        sort_no,
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="resourceNo != null">
+        #{resourceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="parentResourceNo != null">
+        #{parentResourceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceName != null">
+        #{resourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceType != null">
+        #{resourceType,jdbcType=CHAR},
+      </if>
+      <if test="requestPath != null">
+        #{requestPath,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="dataState != null">
+        #{dataState,jdbcType=CHAR},
+      </if>
+      <if test="sortNo != null">
+        #{sortNo,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null">
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzyl.entity.Resource">
+    update sys_resource
+    <set>
+      <if test="resourceNo != null">
+        resource_no = #{resourceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="parentResourceNo != null">
+        parent_resource_no = #{parentResourceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceName != null">
+        resource_name = #{resourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceType != null">
+        resource_type = #{resourceType,jdbcType=CHAR},
+      </if>
+      <if test="requestPath != null">
+        request_path = #{requestPath,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        label = #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="dataState != null">
+        data_state = #{dataState,jdbcType=CHAR},
+      </if>
+      <if test="sortNo != null">
+        sort_no = #{sortNo,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzyl.entity.Resource">
+    update sys_resource
+    set resource_no = #{resourceNo,jdbcType=VARCHAR},
+      parent_resource_no = #{parentResourceNo,jdbcType=VARCHAR},
+      resource_name = #{resourceName,jdbcType=VARCHAR},
+      resource_type = #{resourceType,jdbcType=CHAR},
+      request_path = #{requestPath,jdbcType=VARCHAR},
+      label = #{label,jdbcType=VARCHAR},
+      data_state = #{dataState,jdbcType=CHAR},
+      sort_no = #{sortNo,jdbcType=INTEGER},
+      icon = #{icon,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=BIGINT},
+      update_by = #{updateBy,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="java.util.List" useGeneratedKeys="true">
+    <!--
+      WARNING - @mbg.generated
+      这个节点为代码生成工具生成，请不要修改!
+      @author hewei
+    -->
+    insert into sys_resource (resource_no, parent_resource_no, resource_name, resource_type, request_path, label, data_state, sort_no, icon, create_time, update_time, remark, create_by, update_by)
+    values
+    <foreach collection="list" item="item" separator=",">
+       (#{item.resourceNo,jdbcType=VARCHAR}, #{item.parentResourceNo,jdbcType=VARCHAR}, #{item.resourceName,jdbcType=VARCHAR}, #{item.resourceType,jdbcType=CHAR}, #{item.requestPath,jdbcType=VARCHAR}, #{item.label,jdbcType=VARCHAR}, #{item.dataState,jdbcType=CHAR}, #{item.sortNo,jdbcType=INTEGER}, #{item.icon,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.remark,jdbcType=VARCHAR}, #{item.createBy,jdbcType=BIGINT}, #{item.updateBy,jdbcType=BIGINT})
+    </foreach>
+  </insert>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+        <include refid="Base_Column_List"></include>
+    from sys_resource
+    <where>
+      <if test="resourceType != null and resourceType != ''">
+        and resource_type = #{resourceType}
+      </if>
+      <if test="parentResourceNo != null and parentResourceNo != ''">
+        and parent_resource_no like concat(#{parentResourceNo},'%')
+      </if>
+      <if test="dataState != null and dataState != ''">
+        and data_state = #{dataState}
+      </if>
+    </where>
+    order by sort_no asc
+  </select>
+
+  <delete id="deleteByResourceNo" parameterType="java.lang.String">
+    delete from sys_resource
+    where resource_no = #{resourceNo,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="countChildrenByParentResourceNo" parameterType="java.lang.String" resultType="int">
+    select count(1)
+    from sys_resource
+    where parent_resource_no = #{resourceNo,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateByResourceNo" parameterType="com.zzyl.entity.Resource">
+    update sys_resource
+    <set>
+      <if test="parentResourceNo != null">
+        parent_resource_no = #{parentResourceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceName != null">
+        resource_name = #{resourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceType != null">
+        resource_type = #{resourceType,jdbcType=CHAR},
+      </if>
+      <if test="requestPath != null">
+        request_path = #{requestPath,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        label = #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="dataState != null">
+        data_state = #{dataState,jdbcType=CHAR},
+      </if>
+      <if test="sortNo != null">
+        sort_no = #{sortNo,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where resource_no = #{resourceNo,jdbcType=VARCHAR}
+  </update>
+
+  <select id="findListByUserId" resultType="com.zzyl.vo.MenuVo">
+    SELECT DISTINCT sr.resource_no, sr.parent_resource_no, sr.resource_name as name, sr.request_path as path, sr.sort_no
+    FROM sys_resource sr, sys_role_resource srr, sys_user_role sur
+    WHERE sr.resource_no = srr.resource_no
+      AND srr.role_id =sur.role_id
+      AND sr.data_state = '0'
+      AND sr.resource_type = 'm'
+      AND sur.user_id = #{userId}
+    ORDER BY sr.sort_no ASC
+  </select>
+
+  <select id="findAllMenu" resultType="com.zzyl.vo.MenuVo">
+    SELECT resource_no, parent_resource_no, resource_name as name, request_path as path, sort_no
+    FROM sys_resource
+    WHERE data_state = '0' AND resource_type = 'm'
+    ORDER BY sort_no ASC
+  </select>
+
+</mapper>

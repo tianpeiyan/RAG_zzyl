@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.mapper.NursingTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.zzyl.entity.NursingTask">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="nursing_id" jdbcType="BIGINT" property="nursingId"/>
+        <result column="task_type" jdbcType="INTEGER" property="taskType"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="elder_id" jdbcType="BIGINT" property="elderId"/>
+        <result column="project_id" jdbcType="BIGINT" property="projectId"/>
+        <result column="bed_number" jdbcType="VARCHAR" property="bedNumber"/>
+        <result column="estimated_server_time" jdbcType="TIMESTAMP" property="estimatedServerTime"/>
+        <result column="real_server_time" jdbcType="TIMESTAMP" property="realServerTime"/>
+        <result column="mark" jdbcType="VARCHAR" property="mark"/>
+        <result column="task_image" jdbcType="VARCHAR" property="taskImage"/>
+        <result column="cancel_reason" jdbcType="VARCHAR" property="cancelReason"/>
+        <result column="rel_no" jdbcType="VARCHAR" property="relNo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+
+    <resultMap id="VoResultMap" type="com.zzyl.vo.NursingTaskVo" extends="BaseResultMap">
+        <result column="elder_name" jdbcType="VARCHAR" property="elderName"/>
+        <result column="id_card_no" jdbcType="VARCHAR" property="idCardNo"/>
+        <result column="image" jdbcType="VARCHAR" property="image"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="lname" jdbcType="VARCHAR" property="lname"/>
+        <result column="bed_number" jdbcType="VARCHAR" property="bedNumber"/>
+        <result column="project_name" jdbcType="VARCHAR" property="projectName"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="updater" jdbcType="VARCHAR" property="updater"/>
+        <collection property="nursingName" column="elder_id" select="com.zzyl.mapper.NursingElderMapper.selectNursingNameByElderId"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.zzyl.entity.NursingTask" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO nursing_task (
+            nursing_id, task_type, status, elder_id, project_id, bed_number,
+            estimated_server_time, real_server_time, mark, task_image, cancel_reason, rel_no,
+            create_time, update_time, create_by, update_by, remark
+        ) VALUES (
+            #{nursingId}, #{taskType}, #{status}, #{elderId}, #{projectId}, #{bedNumber},
+            #{estimatedServerTime}, #{realServerTime}, #{mark}, #{taskImage}, #{cancelReason}, #{relNo},
+            #{createTime}, #{updateTime}, #{createBy}, #{updateBy}, #{remark}
+        )
+    </insert>
+
+    <delete id="deletePendingPlanTasksForInvalidElders">
+        DELETE FROM nursing_task
+        WHERE status = 1
+          AND task_type = 2
+          AND (
+            EXISTS (
+                SELECT 1
+                FROM elder e
+                WHERE e.id = nursing_task.elder_id
+                  AND e.status = 5
+            )
+            OR EXISTS (
+                SELECT 1
+                FROM contract c
+                WHERE c.elder_id = nursing_task.elder_id
+                  AND c.status IN (2, 3)
+                  AND c.create_time = (
+                    SELECT MAX(c2.create_time)
+                    FROM contract c2
+                    WHERE c2.elder_id = nursing_task.elder_id
+                  )
+            )
+          )
+    </delete>
+
+    <update id="update" parameterType="com.zzyl.entity.NursingTask">
+        UPDATE nursing_task
+        <set>
+            <if test="nursingId != null">nursing_id = #{nursingId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="bedNumber != null">bed_number = #{bedNumber},</if>
+            <if test="estimatedServerTime != null">estimated_server_time = #{estimatedServerTime},</if>
+            <if test="realServerTime != null">real_server_time = #{realServerTime},</if>
+            <if test="mark != null">mark = #{mark},</if>
+            <if test="taskImage != null">task_image = #{taskImage},</if>
+            <if test="cancelReason != null">cancel_reason = #{cancelReason},</if>
+            <if test="relNo != null">rel_no = #{relNo},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM nursing_task WHERE id = #{id}
+    </select>
+
+    <select id="selectByPage" resultMap="VoResultMap">
+        SELECT
+        nt.id,
+        nt.nursing_id,
+        nt.project_id,
+        nt.elder_id,
+        nt.task_type,
+        nt.estimated_server_time,
+        nt.real_server_time,
+        nt.mark,
+        nt.cancel_reason,
+        nt.status,
+        nt.rel_no,
+        nt.task_image,
+        nt.create_time,
+        nt.update_time,
+        nt.create_by,
+        nt.update_by,
+        nt.remark,
+        e.name AS elder_name,
+        e.id_card_no,
+        e.image,
+        e.sex,
+        cc.nursing_level_name AS lname,
+        COALESCE(nt.bed_number, e.bed_number, b.bed_number) AS bed_number,
+        np.name AS project_name,
+        su_create.real_name AS creator,
+        su_update.real_name AS updater
+        FROM nursing_task nt
+        LEFT JOIN elder e ON nt.elder_id = e.id
+        LEFT JOIN bed b ON e.bed_id = b.id
+        LEFT JOIN nursing_project np ON nt.project_id = np.id
+        LEFT JOIN sys_user su_create ON nt.create_by = su_create.id
+        LEFT JOIN sys_user su_update ON nt.update_by = su_update.id
+        LEFT JOIN check_in ci ON ci.elder_id = nt.elder_id AND ci.status = 0
+        LEFT JOIN check_in_config cc ON cc.check_in_code = ci.check_in_code
+        <where>
+            <if test="nurseId != null">
+                AND EXISTS (
+                SELECT 1 FROM nursing_elder ne2
+                WHERE ne2.elder_id = nt.elder_id AND ne2.nursing_id = #{nurseId}
+                )
+            </if>
+            <if test="projectId != null">
+                AND nt.project_id = #{projectId}
+            </if>
+            <if test="elderName != null and elderName != ''">
+                AND e.name LIKE CONCAT('%', #{elderName}, '%')
+            </if>
+            <if test="status != null">
+                AND nt.status = #{status}
+            </if>
+            <if test="startTime != null">
+                AND nt.estimated_server_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND nt.estimated_server_time &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY nt.estimated_server_time ASC, nt.id ASC
+    </select>
+
+    <select id="countByElderIdAndProjectIdAndEstimatedTime" resultType="int">
+        SELECT COUNT(1) FROM nursing_task
+        WHERE elder_id = #{elderId}
+          AND project_id = #{projectId}
+          AND estimated_server_time = #{estimatedServerTime}
+          AND task_type = 2
+    </select>
+
+    <select id="selectVoById" resultMap="VoResultMap">
+        SELECT
+            nt.id,
+            nt.nursing_id,
+            nt.project_id,
+            nt.elder_id,
+            nt.task_type,
+            nt.estimated_server_time,
+            nt.real_server_time,
+            nt.mark,
+            nt.cancel_reason,
+            nt.status,
+            nt.rel_no,
+            nt.task_image,
+            nt.create_time,
+            nt.update_time,
+            nt.create_by,
+            nt.update_by,
+            nt.remark,
+            e.name AS elder_name,
+            e.id_card_no,
+            e.image,
+            e.sex,
+            cc.nursing_level_name AS lname,
+            COALESCE(nt.bed_number, e.bed_number, b.bed_number) AS bed_number,
+            np.name AS project_name,
+            su_create.real_name AS creator,
+            su_update.real_name AS updater
+        FROM nursing_task nt
+        LEFT JOIN elder e ON nt.elder_id = e.id
+        LEFT JOIN bed b ON e.bed_id = b.id
+        LEFT JOIN nursing_project np ON nt.project_id = np.id
+        LEFT JOIN sys_user su_create ON nt.create_by = su_create.id
+        LEFT JOIN sys_user su_update ON nt.update_by = su_update.id
+        LEFT JOIN check_in ci ON ci.elder_id = nt.elder_id AND ci.status = 0
+        LEFT JOIN check_in_config cc ON cc.check_in_code = ci.check_in_code
+        WHERE nt.id = #{id}
+    </select>
+
+</mapper>

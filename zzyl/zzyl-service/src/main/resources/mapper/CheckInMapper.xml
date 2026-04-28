@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.mapper.CheckInMapper">
+    <resultMap id="BaseResultMap" type="com.zzyl.entity.CheckIn">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="check_in_code" jdbcType="VARCHAR" property="checkInCode"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="elder_id" jdbcType="BIGINT" property="elderId"/>
+        <result column="check_in_time" jdbcType="TIMESTAMP" property="checkInTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="applicat" jdbcType="VARCHAR" property="applicat"/>
+        <result column="dept_no" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="applicat_id" jdbcType="BIGINT" property="applicatId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="other_apply_info" jdbcType="VARCHAR" property="otherApplyInfo"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, check_in_code, title, elder_id, check_in_time, remark, applicat, dept_no, applicat_id, create_time, update_time, status, other_apply_info
+    </sql>
+
+    <insert id="insert" parameterType="com.zzyl.entity.CheckIn" useGeneratedKeys="true" keyProperty="id">
+        insert into check_in (check_in_code, title, elder_id,
+                              check_in_time, remark, applicat,
+                              dept_no, applicat_id, create_time,
+                              status, other_apply_info)
+        values (#{checkInCode,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{elderId,jdbcType=BIGINT},
+                #{checkInTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{applicat,jdbcType=VARCHAR},
+                #{deptNo,jdbcType=VARCHAR}, #{applicatId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
+                #{status,jdbcType=INTEGER}, #{otherApplyInfo,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from check_in
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectList" resultType="com.zzyl.vo.CheckInVo">
+        select
+            c.id,
+            e.name as elderName,
+            e.id_card_no as elderIdCardNo,
+            cc.bed_number as bedNumber,
+            cc.nursing_level_name as nursingLevelName,
+            cc.check_in_start_time as checkInStartTime,
+            cc.check_in_end_time as checkInEndTime,
+            c.applicat,
+            c.create_time as createTime
+        from check_in c
+        left join elder e on c.elder_id = e.id
+        left join check_in_config cc on c.check_in_code = cc.check_in_code
+        <where>
+            <if test="name != null and name != ''">
+                 e.name like concat('%', #{name}, '%')
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and e.id_card_no like concat('%', #{idCard}, '%')
+            </if>
+        </where>
+        order by c.create_time desc
+    </select>
+
+    <select id="selectActiveList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from check_in
+        where status = 0
+        order by create_time desc
+    </select>
+</mapper>

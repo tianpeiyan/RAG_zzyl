@@ -1,0 +1,80 @@
+#服务配置
+server:
+  #端口
+  port: 9995
+  #服务编码
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  application:
+    name: zzyl
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 11MB
+  #数据源配置
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/zzyl?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+      username: root
+      password: 123456
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  # password:
+
+# MyBatis配置
+mybatis:
+  #mapper配置文件
+  mapper-locations: classpath*:mapper*/*Mapper.xml
+  type-aliases-package: com.zzyl.entity
+  configuration:
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 驼峰下划线转换
+    map-underscore-to-camel-case: true
+    use-generated-keys: true
+    default-statement-timeout: 60
+    default-fetch-size: 100
+logging:
+  config: classpath:logback.xml
+  level:
+    org.springframework.web.socket: debug
+knife4j:
+  enable: true
+zzyl:
+  framework:
+    swagger:
+      swagger-path: com.zzyl.controller
+      title:
+      description: 颐家亲·养老院数字化服务平台
+      contact-name: 田培岩
+      contact-url: www.itheima.com
+      contact-email: itheima@itcast.cn
+    jwt:
+      base64-encoded-secret-key: ${ZZYL_JWT_SECRET:change-me}
+      ttl: 3600000
+    oss:
+      endpoint: oss-cn-beijing.aliyuncs.com
+      accessKeyId: ${ALIYUN_ACCESS_KEY_ID:}
+      accessKeySecret: ${ALIYUN_ACCESS_KEY_SECRET:}
+      bucketName: ${ALIYUN_OSS_BUCKET:tpy-zzyl}
+  wechat:
+    appId: wxd5040623558fa5ac
+    appSecret: ${WECHAT_APP_SECRET:}
+  ai:
+    base-url: http://127.0.0.1:8000
+    internal-api-key: sk-4e1d2854f6e84b3a8f2e9c8d7b6a5f4e
+    connect-timeout-millis: 3000
+    read-timeout-millis: 30000
+    max-retries: 1

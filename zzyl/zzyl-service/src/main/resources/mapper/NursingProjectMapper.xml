@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzyl.mapper.NursingProjectMapper">
+    <resultMap id="BaseResultMap" type="com.zzyl.entity.NursingProject">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+        <result column="unit" property="unit" jdbcType="VARCHAR" />
+        <result column="price" property="price" jdbcType="DECIMAL" />
+        <result column="image" property="image" jdbcType="VARCHAR" />
+        <result column="nursing_requirement" property="nursingRequirement" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <resultMap id="BaseResultVoMap" type="com.zzyl.vo.NursingProjectVo">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+        <result column="unit" property="unit" jdbcType="VARCHAR" />
+        <result column="price" property="price" jdbcType="DECIMAL" />
+        <result column="image" property="image" jdbcType="VARCHAR" />
+        <result column="nursing_requirement" property="nursingRequirement" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="creator" property="creator" jdbcType="VARCHAR" />
+        <result column="count" property="count"></result>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.zzyl.entity.NursingProject">
+        INSERT INTO nursing_project (name, order_no, unit, price, image, nursing_requirement, status, create_by, update_by, remark, create_time, update_time)
+        VALUES (#{name}, #{orderNo}, #{unit}, #{price}, #{image}, #{nursingRequirement}, #{status}, #{createBy}, #{updateBy}, #{remark}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="update" parameterType="com.zzyl.entity.NursingProject">
+        UPDATE nursing_project
+        <set>
+            <if test="name != null and name !=''">name = #{name},</if>
+            <if test="orderNo != null">order_no = #{orderNo},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="nursingRequirement != null">nursing_requirement = #{nursingRequirement},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM nursing_project
+        WHERE id = #{id}
+    </delete>
+
+    <select id="findById" parameterType="long" resultMap="BaseResultMap">
+        SELECT * FROM nursing_project
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByPage" resultMap="BaseResultVoMap">
+        select np.*, su.real_name creator,count(npp.id) count
+        from nursing_project np
+        left join sys_user su on np.create_by = su.id
+        left join nursing_project_plan npp on np.id = npp.project_id
+        <where>
+            <if test="name != null and name != ''">
+                and np.name like concat('%',#{name},'%')
+            </if>
+            <if test="status != null">
+                and np.status = #{status}
+            </if>
+        </where>
+        group by np.id
+        order by np.order_no, np.create_time desc
+
+    </select>
+</mapper>

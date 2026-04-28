@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzyl.assistant.mapper.AssistantHistoryMapper">
+    <resultMap id="assistantHistoryMap" type="com.zzyl.assistant.entity.AssistantHistory">
+        <id column="id" property="id"/>
+        <result column="session_id" property="sessionId"/>
+        <result column="user_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="role" property="role"/>
+        <result column="content" property="content"/>
+        <result column="trace_id" property="traceId"/>
+        <result column="hit_count" property="hitCount"/>
+        <result column="refused" property="refused"/>
+        <result column="status" property="status"/>
+        <result column="source_json" property="sourceJson"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.zzyl.assistant.entity.AssistantHistory" useGeneratedKeys="true" keyProperty="id">
+        insert into `history` (
+            session_id, user_id, username, role, content, trace_id,
+            hit_count, refused, status, source_json, create_time, update_time
+        )
+        values (
+            #{sessionId}, #{userId}, #{username}, #{role}, #{content}, #{traceId},
+            #{hitCount}, #{refused}, #{status}, #{sourceJson}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <select id="findBySession" resultMap="assistantHistoryMap">
+        select *
+        from `history`
+        where user_id = #{userId}
+          and session_id = #{sessionId}
+        order by create_time asc, id asc
+    </select>
+
+    <select id="findRecentMessages" resultMap="assistantHistoryMap">
+        select *
+        from (
+            select *
+            from `history`
+            where user_id = #{userId}
+              and session_id = #{sessionId}
+            order by create_time desc, id desc
+            limit #{limit}
+        ) recent
+        order by create_time asc, id asc
+    </select>
+
+    <select id="findSessions" resultType="com.zzyl.assistant.vo.AssistantSessionVo">
+        select
+            s.session_id as sessionId,
+            coalesce(
+                (
+                    select h2.content
+                    from `history` h2
+                    where h2.user_id = #{userId}
+                      and h2.session_id = s.session_id
+                      and h2.role = 'user'
+                    order by h2.create_time asc, h2.id asc
+                    limit 1
+                ),
+                '新会话'
+            ) as title,
+            count(1) as messageCount,
+            sum(case when s.role = 'user' then 1 else 0 end) as questionCount,
+            max(s.create_time) as updatedAt
+        from `history` s
+        where s.user_id = #{userId}
+        group by s.session_id
+        order by updatedAt desc
+        limit #{limit}
+    </select>
+
+    <delete id="deleteSession">
+        delete from `history`
+        where user_id = #{userId}
+          and session_id = #{sessionId}
+    </delete>
+</mapper>

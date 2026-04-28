@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.mapper.MemberMapper">
+    <insert id="insertMember" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO member (phone, name, avatar, open_id, gender, create_time, update_time, create_by, update_by, remark)
+        VALUES (#{phone}, #{name}, #{avatar}, #{openId}, #{gender}, #{createTime}, #{updateTime}, #{createBy}, #{updateBy}, #{remark})
+    </insert>
+
+    <update id="updateMember" >
+        UPDATE member
+        SET phone = #{phone}, name = #{name}, avatar = #{avatar}, open_id = #{openId}, gender = #{gender}, update_time = #{updateTime}, update_by = #{updateBy}, remark = #{remark}
+        WHERE id = #{id}
+    </update>
+</mapper>

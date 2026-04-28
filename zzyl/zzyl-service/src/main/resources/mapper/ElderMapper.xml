@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.mapper.ElderMapper">
+    <resultMap id="BaseResultMap" type="com.zzyl.entity.Elder">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="image" jdbcType="VARCHAR" property="image"/>
+        <result column="id_card_no" jdbcType="VARCHAR" property="idCardNo"/>
+        <result column="phone" property="phone"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="birthday" jdbcType="VARCHAR" property="birthday"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="bed_number" jdbcType="VARCHAR" property="bedNumber"/>
+        <result column="bed_id" jdbcType="BIGINT" property="bedId"/>
+        <result column="id_card_national_emblem_img" jdbcType="VARCHAR" property="idCardNationalEmblemImg"/>
+        <result column="id_card_portrait_img" jdbcType="VARCHAR" property="idCardPortraitImg"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, name, image, id_card_no, phone, status, sex, birthday, address, create_time, update_time, create_by, update_by, remark, bed_number, bed_id, id_card_national_emblem_img, id_card_portrait_img
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from elder
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from elder
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.zzyl.entity.Elder" useGeneratedKeys="true" keyProperty="id">
+        insert into elder (id, name, image, id_card_no, sex,
+                           status, create_time, update_time,
+                           create_by, update_by, phone, remark,
+                           id_card_national_emblem_img, id_card_portrait_img, birthday, address)
+        values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR},
+                #{idCardNo,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
+                #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+                #{createBy,jdbcType=BIGINT}, #{updateBy,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR},
+                #{remark,jdbcType=VARCHAR},
+                #{idCardNationalEmblemImg,jdbcType=VARCHAR}, #{idCardPortraitImg,jdbcType=VARCHAR},
+                #{birthday,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.zzyl.entity.Elder">
+        insert into elder
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="image != null">
+                image,
+            </if>
+            <if test="idCardNo != null">
+                id_card_no,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="bedNumber != null">
+                bed_number,
+            </if>
+            <if test="bedId != null">
+                bed_id,
+            </if>
+            <if test="idCardNationalEmblemImg != null">
+                id_card_national_emblem_img,
+            </if>
+            <if test="idCardPortraitImg != null">
+                id_card_portrait_img,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="image != null">
+                #{image,jdbcType=VARCHAR},
+            </if>
+            <if test="idCardNo != null">
+                #{idCardNo,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="bedNumber != null">
+                #{bedNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="bedId != null">
+                #{bedId,jdbcType=BIGINT},
+            </if>
+            <if test="idCardNationalEmblemImg != null">
+                #{idCardNationalEmblemImg,jdbcType=VARCHAR},
+            </if>
+            <if test="idCardPortraitImg != null">
+                #{idCardPortraitImg,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.zzyl.entity.Elder">
+        update elder
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="image != null">
+                image = #{image,jdbcType=VARCHAR},
+            </if>
+            <if test="idCardNo != null">
+                id_card_no = #{idCardNo,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="bedNumber != null">
+                bed_number = #{bedNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="bedId != null">
+                bed_id = #{bedId,jdbcType=BIGINT},
+            </if>
+            <if test="idCardNationalEmblemImg != null">
+                id_card_national_emblem_img = #{idCardNationalEmblemImg,jdbcType=VARCHAR},
+            </if>
+            <if test="idCardPortraitImg != null">
+                id_card_portrait_img = #{idCardPortraitImg,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.zzyl.entity.Elder">
+        update elder
+        set name        = #{name,jdbcType=VARCHAR},
+            image       = #{image,jdbcType=VARCHAR},
+            status      = #{status,jdbcType=INTEGER},
+            sex         = #{sex,jdbcType=VARCHAR},
+            birthday    = #{birthday,jdbcType=VARCHAR},
+            address     = #{address,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            create_by   = #{createBy,jdbcType=BIGINT},
+            update_by   = #{updateBy,jdbcType=BIGINT},
+            remark      = #{remark,jdbcType=VARCHAR},
+            id_card_national_emblem_img = #{idCardNationalEmblemImg,jdbcType=VARCHAR},
+            id_card_portrait_img = #{idCardPortraitImg,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <select id="selectByIdCardAndName" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from elder
+        where id_card_no = #{idCard,jdbcType=VARCHAR} and name = #{name,jdbcType=VARCHAR}
+        and status != 0
+    </select>
+
+    <select id="selectList" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from elder
+        where status != 0 and 5 > status
+        order by create_time desc
+    </select>
+
+    <select id="selectByIds" parameterType="long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from elder
+        where id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectByIdCard" resultType="com.zzyl.entity.Elder">
+        select
+        <include refid="Base_Column_List"/>
+        from elder
+        where id_card_no = #{idCard,jdbcType=VARCHAR}
+        and status != 0
+    </select>
+
+    <select id="selectByPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from elder
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="idCardNo != null and idCardNo != ''">
+                and id_card_no like concat('%', #{idCardNo}, '%')
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="status == null">
+                and status != 5
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzyl.mapper.RefundRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.zzyl.entity.RefundRecord">
+        <id column="id" property="id" />
+        <result column="trading_order_no" property="tradingOrderNo" />
+        <result column="product_order_no" property="productOrderNo" />
+        <result column="refund_no" property="refundNo" />
+        <result column="enterprise_id" property="enterpriseId" />
+        <result column="trading_channel" property="tradingChannel" />
+        <result column="refund_status" property="refundStatus" />
+        <result column="refund_code" property="refundCode" />
+        <result column="refund_msg" property="refundMsg" />
+        <result column="memo" property="memo" />
+        <result column="refund_amount" property="refundAmount" />
+        <result column="total" property="total" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_by" property="createBy" />
+        <result column="update_by" property="updateBy" />
+        <result column="remark" property="remark" />
+        <result column="create_type" property="createType" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.zzyl.entity.RefundRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO refund_record (
+            trading_order_no, product_order_no, refund_no, enterprise_id,
+            trading_channel, refund_status, refund_code, refund_msg,
+            memo, refund_amount, total, create_time, update_time,
+            create_by, update_by, remark, create_type
+        ) VALUES (
+            #{tradingOrderNo}, #{productOrderNo}, #{refundNo}, #{enterpriseId},
+            #{tradingChannel}, #{refundStatus}, #{refundCode}, #{refundMsg},
+            #{memo}, #{refundAmount}, #{total}, #{createTime}, #{updateTime},
+            #{createBy}, #{updateBy}, #{remark}, #{createType}
+        )
+    </insert>
+
+    <select id="selectByPage" resultMap="BaseResultMap">
+        SELECT * FROM refund_record
+        <where>
+            <if test="refundStatus != null">
+                AND refund_status = #{refundStatus}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+    
+    <select id="selectByProductOrderNo" resultMap="BaseResultMap">
+        SELECT * FROM refund_record
+        WHERE product_order_no = #{productOrderNo}
+        LIMIT 1
+    </select>
+
+</mapper>

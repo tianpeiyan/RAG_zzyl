@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzyl.mapper.OrderMapper">
+
+    <insert id="insert" parameterType="com.zzyl.entity.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `order` (
+            trading_order_no, payment_status, amount, refund, is_refund, 
+            member_id, project_id, elder_id, estimated_arrival_time, 
+            mark, reason, status, create_time, update_time, 
+            create_by, update_by, remark, view_status, order_no, o_create_type
+        ) VALUES (
+            #{tradingOrderNo}, #{paymentStatus}, #{amount}, #{refund}, #{isRefund},
+            #{memberId}, #{projectId}, #{elderId}, #{estimatedArrivalTime},
+            #{mark}, #{reason}, #{status}, #{createTime}, #{updateTime},
+            #{createBy}, #{updateBy}, #{remark}, #{viewStatus}, #{orderNo}, #{oCreateType}
+        )
+    </insert>
+
+    <select id="selectByPage" resultType="com.zzyl.entity.Order">
+        SELECT o.*
+        FROM `order` o
+        WHERE o.member_id = #{memberId}
+          AND o.view_status = '0'
+        <if test="status != null">
+            AND o.status = #{status}
+        </if>
+        ORDER BY o.create_time DESC
+    </select>
+
+    <select id="selectByIdAndMemberId" resultType="com.zzyl.entity.Order">
+        SELECT o.*
+        FROM `order` o
+        WHERE o.id = #{id}
+          AND o.member_id = #{memberId}
+          AND o.view_status = '0'
+        LIMIT 1
+    </select>
+
+    <update id="paySuccessById">
+        UPDATE `order`
+        SET status = 1,
+            payment_status = 2,
+            update_time = #{now},
+            update_by = #{memberId}
+        WHERE id = #{id}
+          AND member_id = #{memberId}
+          AND view_status = '0'
+          AND status = 0
+          AND payment_status = 1
+    </update>
+
+    <update id="cancelById">
+        UPDATE `order`
+        SET status = 4,
+            payment_status = 3,
+            reason = #{reason},
+            update_time = #{now},
+            update_by = #{memberId}
+        WHERE id = #{id}
+          AND member_id = #{memberId}
+          AND view_status = '0'
+          AND status = 0
+    </update>
+
+    <update id="hideById">
+        UPDATE `order`
+        SET view_status = '1',
+            update_time = #{now},
+            update_by = #{memberId}
+        WHERE id = #{id}
+          AND member_id = #{memberId}
+          AND view_status = '0'
+          AND status NOT IN (0, 1)
+    </update>
+
+    <select id="selectTimeoutOrders" resultType="com.zzyl.entity.Order">
+        SELECT id
+        FROM `order`
+        WHERE status = 0
+          AND create_time &lt; #{time}
+          AND view_status = '0'
+    </select>
+
+    <select id="selectByPageAdmin" resultType="com.zzyl.entity.Order">
+        SELECT o.*
+        FROM `order` o
+        WHERE o.view_status = '0'
+        <if test="status != null">
+            AND o.status = #{status}
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            AND o.order_no LIKE concat('%', #{orderNo}, '%')
+        </if>
+        ORDER BY o.create_time DESC
+    </select>
+
+    <update id="cancelByIdAdmin">
+        UPDATE `order`
+        SET status = 4,
+            payment_status = 3,
+            reason = #{reason},
+            update_time = #{now},
+            update_by = #{updateBy}
+        WHERE id = #{id}
+          AND status = 0
+    </update>
+
+    <update id="updateStatusToClosed">
+        UPDATE `order`
+        SET status = 4,
+            payment_status = 3,
+            reason = '超时自动取消',
+            update_time = #{now}
+        WHERE id = #{id}
+          AND status = 0
+    </update>
+
+    <update id="updateStatusToRefunded">
+        UPDATE `order`
+        SET status = 5,
+            is_refund = 'YES',
+            refund = amount,
+            update_time = #{now}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.zzyl.entity.Order">
+        SELECT * FROM `order` WHERE id = #{id}
+    </select>
+
+
+</mapper>
